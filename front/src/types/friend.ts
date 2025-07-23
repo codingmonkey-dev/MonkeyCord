@@ -2,7 +2,10 @@ export interface Friend {
   id: string;
   username: string;
   mail: string;
-  isOnline?: boolean;
+}
+
+export interface FriendWithOnlineStatus extends Friend {
+  isOnline: boolean;
 }
 
 export interface FriendInvitation {

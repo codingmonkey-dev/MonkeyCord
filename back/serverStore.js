@@ -14,11 +14,16 @@ const getSocketServerInstance = () => {
 
 const addNewConnectedUser = ({ socketId, userId }) => {
   connectedUsers.set(socketId, { userId });
+  console.log("User connected:", { socketId, userId });
+  console.log("Total connected users:", connectedUsers.size);
 };
 
 const removeConnectedUser = (socketId) => {
   if (connectedUsers.has(socketId)) {
+    const user = connectedUsers.get(socketId);
     connectedUsers.delete(socketId);
+    console.log("User disconnected:", { socketId, userId: user.userId });
+    console.log("Remaining connected users:", connectedUsers.size);
   }
 };
 
@@ -30,6 +35,7 @@ const getActiveConnections = (userId) => {
     }
   });
 
+  console.log("Active connections for userId", userId, ":", activeConnections);
   return activeConnections;
 };
 

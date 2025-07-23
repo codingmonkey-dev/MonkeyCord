@@ -1,3 +1,8 @@
+export enum ChatType {
+  DIRECT = "DIRECT",
+  GROUP = "GROUP",
+}
+
 export interface Message {
   _id: string;
   content: string;
@@ -12,9 +17,4 @@ export interface Message {
 export interface ChatDetails {
   id: string;
   name: string;
-}
-
-export enum ChatType {
-  DIRECT = "DIRECT",
-  GROUP = "GROUP",
 }

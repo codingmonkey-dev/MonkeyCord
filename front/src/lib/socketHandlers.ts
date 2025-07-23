@@ -21,68 +21,87 @@ import {
   getLocalStreamPreview,
 } from "./webrtc";
 
-// 타입을 추론하도록 하는 방식
-type SetterFn<T> = (value: T | ((prevValue: T) => T)) => void;
+export const useSocketHandlers = (socket: Socket | null) => {
+  const setFriends = useSetAtom(friendsAtom);
+  const setPendingInvitations = useSetAtom(pendingInvitationsAtom);
+  const setOnlineUsers = useSetAtom(onlineUsersAtom);
+  const setMessages = useSetAtom(messagesAtom);
+  const setActiveRooms = useSetAtom(activeRoomsAtom);
+  const setRoomDetails = useSetAtom(roomDetailsAtom);
+  const setIsUserInRoom = useSetAtom(isUserInRoomAtom);
+  const setIsUserRoomCreator = useSetAtom(isUserRoomCreatorAtom);
+  const setLocalStream = useSetAtom(localStreamAtom);
+  const setRemoteStreams = useSetAtom(remoteStreamsAtom);
 
-export const setupSocketHandlers = (
-  socket: Socket,
-  setFriends: SetterFn<any[]>,
-  setPendingInvitations: SetterFn<any[]>,
-  setOnlineUsers: SetterFn<any[]>,
-  setMessages: SetterFn<any[]>,
-  setActiveRooms: SetterFn<any[]>,
-  setRoomDetails: SetterFn<any>,
-  setIsUserInRoom: SetterFn<boolean>,
-  setIsUserRoomCreator: SetterFn<boolean>,
-  setLocalStream: SetterFn<MediaStream | null>,
-  setRemoteStreams: SetterFn<MediaStream[]>
-) => {
-  socket.on("friends-list", (data) => {
-    const { friends } = data;
-    setFriends(friends);
-  });
+  if (socket) {
+    socket.off("friends-list");
+    socket.off("friends-invitations");
+    socket.off("online-users");
+    socket.off("direct-chat-history");
+    socket.off("room-create");
+    socket.off("active-rooms");
+    socket.off("conn-prepare");
+    socket.off("conn-init");
+    socket.off("conn-signal");
+    socket.off("room-participant-left");
 
-  socket.on("friends-invitations", (data) => {
-    const { pendingInvitations } = data;
-    setPendingInvitations(pendingInvitations);
-  });
+    socket.on("friends-list", (data) => {
+      console.log("Friends list received:", data);
+      const { friends } = data;
+      setFriends(friends);
+    });
 
-  socket.on("online-users", (data) => {
-    const { onlineUsers } = data;
-    setOnlineUsers(onlineUsers);
-  });
+    socket.on("friends-invitations", (data) => {
+      console.log("Friends invitations received:", data);
+      const { pendingInvitations } = data;
+      setPendingInvitations(pendingInvitations);
+    });
 
-  socket.on("direct-chat-history", (data) => {
-    setMessages(data.messages);
-  });
+    socket.on("online-users", (data) => {
+      console.log("Online users received:", data);
+      const { onlineUsers } = data;
+      setOnlineUsers(onlineUsers);
+    });
 
-  socket.on("room-create", (data) => {
-    const { roomDetails } = data;
-    setRoomDetails(roomDetails);
-    setIsUserInRoom(true);
-    setIsUserRoomCreator(true);
-  });
+    socket.on("direct-chat-history", (data) => {
+      console.log("Direct chat history received:", data);
+      setMessages(data.messages);
+    });
 
-  socket.on("active-rooms", (data) => {
-    const { activeRooms } = data;
-    setActiveRooms(activeRooms);
-  });
+    socket.on("room-create", (data) => {
+      console.log("Room create received:", data);
+      const { roomDetails } = data;
+      setRoomDetails(roomDetails);
+      setIsUserInRoom(true);
+      setIsUserRoomCreator(true);
+    });
 
-  socket.on("conn-prepare", (data) => {
-    const { connUserSocketId } = data;
-    // WebRTC connection preparation logic would go here
-  });
+    socket.on("active-rooms", (data) => {
+      console.log("Active rooms received:", data);
+      const { activeRooms } = data;
+      setActiveRooms(activeRooms);
+    });
 
-  socket.on("conn-init", (data) => {
-    const { connUserSocketId } = data;
-    // WebRTC connection initialization logic would go here
-  });
+    socket.on("conn-prepare", (data) => {
+      console.log("Connection prepare received:", data);
+      const { connUserSocketId } = data;
+      // WebRTC connection preparation logic would go here
+    });
 
-  socket.on("conn-signal", (data) => {
-    handleSignalingData(data);
-  });
+    socket.on("conn-init", (data) => {
+      console.log("Connection init received:", data);
+      const { connUserSocketId } = data;
+      // WebRTC connection initialization logic would go here
+    });
 
-  socket.on("room-participant-left", (data) => {
-    handleParticipantLeftRoom(data);
-  });
+    socket.on("conn-signal", (data) => {
+      console.log("Connection signal received:", data);
+      handleSignalingData(data);
+    });
+
+    socket.on("room-participant-left", (data) => {
+      console.log("Room participant left received:", data);
+      handleParticipantLeftRoom(data);
+    });
+  }
 };

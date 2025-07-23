@@ -1,24 +1,16 @@
+export interface RoomParticipant {
+  userId: string;
+  socketId: string;
+}
+
 export interface RoomDetails {
+  roomCreator: RoomParticipant;
+  participants: RoomParticipant[];
   roomId: string;
-  roomCreator?: {
-    userId: string;
-    socketId: string;
-  };
-  participants?: Array<{
-    userId: string;
-    socketId: string;
-  }>;
 }
 
 export interface ActiveRoom {
+  roomCreator: RoomParticipant;
+  participants: RoomParticipant[];
   roomId: string;
-  roomCreator: {
-    userId: string;
-    socketId: string;
-  };
-  participants: Array<{
-    userId: string;
-    socketId: string;
-  }>;
-  creatorUsername?: string;
 }
