@@ -35,32 +35,44 @@ const PendingInvitations: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-1/5 overflow-y-auto">
+    <div className="flex flex-col space-y-1">
       {pendingInvitations.map((invitation) => (
         <div
           key={invitation._id}
-          className="w-full h-12 mt-2 flex items-center justify-between px-2"
+          className="flex items-center justify-between p-2 rounded group"
           title={invitation.senderId.mail}
+          style={{ backgroundColor: "rgba(114, 118, 125, 0.1)" }}
         >
-          <div className="flex items-center">
+          <div className="flex items-center flex-1 min-w-0">
             <Avatar username={invitation.senderId.username} />
-            <span className="ml-2 text-gray-300 text-sm font-semibold">
+            <span
+              className="ml-3 text-sm font-medium truncate"
+              style={{ color: "var(--monkeycode-text-secondary)" }}
+            >
               {invitation.senderId.username}
             </span>
           </div>
 
-          <div className="flex gap-1">
+          <div className="flex gap-1 ml-2">
             <button
-              className="w-8 h-8 bg-green-600 hover:bg-green-700 rounded flex items-center justify-center text-white disabled:opacity-50"
+              className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold disabled:opacity-50 hover:scale-105 transition-transform"
               onClick={() => handleAcceptInvitation(invitation._id)}
               disabled={buttonsDisabled[invitation._id]}
+              style={{
+                backgroundColor: "var(--monkeycode-success)",
+                color: "white",
+              }}
             >
               ✓
             </button>
             <button
-              className="w-8 h-8 bg-red-600 hover:bg-red-700 rounded flex items-center justify-center text-white disabled:opacity-50"
+              className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold disabled:opacity-50 hover:scale-105 transition-transform"
               onClick={() => handleRejectInvitation(invitation._id)}
               disabled={buttonsDisabled[invitation._id]}
+              style={{
+                backgroundColor: "var(--monkeycode-danger)",
+                color: "white",
+              }}
             >
               ✕
             </button>

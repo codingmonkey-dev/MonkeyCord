@@ -9,10 +9,37 @@ const VideoContainer: React.FC = () => {
   const [remoteStreams] = useAtom(remoteStreamsAtom);
 
   return (
-    <div className="h-4/5 w-full flex flex-wrap">
-      {localStream && <Video stream={localStream} isLocalStream />}
+    <div className="flex-1 w-full flex flex-wrap p-2 gap-2">
+      {localStream && (
+        <div className="flex-1 min-w-0 rounded-lg overflow-hidden relative">
+          <Video stream={localStream} isLocalStream />
+          <div
+            className="absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-medium"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              color: "var(--monkeycode-text-primary)",
+            }}
+          >
+            나
+          </div>
+        </div>
+      )}
       {remoteStreams.map((stream, index) => (
-        <Video key={index} stream={stream} />
+        <div
+          key={index}
+          className="flex-1 min-w-0 rounded-lg overflow-hidden relative"
+        >
+          <Video stream={stream} />
+          <div
+            className="absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-medium"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              color: "var(--monkeycode-text-primary)",
+            }}
+          >
+            참가자 {index + 1}
+          </div>
+        </div>
       ))}
     </div>
   );

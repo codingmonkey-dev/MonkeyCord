@@ -15,16 +15,31 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   additionalStyles = "",
   type = "button",
 }) => {
+  const baseClasses =
+    "monkeycode-button w-full flex items-center justify-center font-medium cursor-pointer";
+  const normalClasses = "text-white";
+  const disabledClasses = "opacity-50 cursor-not-allowed";
+
+  const getBackgroundStyle = () => {
+    if (disabled) return { backgroundColor: "#4f545c" };
+    if (additionalStyles.includes("bg-green"))
+      return { backgroundColor: "var(--monkeycode-success)" };
+    if (additionalStyles.includes("bg-red"))
+      return { backgroundColor: "var(--monkeycode-danger)" };
+    if (additionalStyles.includes("bg-gray"))
+      return { backgroundColor: "#4f545c" };
+    return { backgroundColor: "var(--monkeycode-accent)" };
+  };
+
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`
-        w-full h-10 bg-blue-600 text-white font-medium rounded 
-        hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed
-        transition-colors duration-200 ${additionalStyles}
-      `}
+      className={`${baseClasses} ${
+        disabled ? disabledClasses : normalClasses
+      } ${additionalStyles}`}
+      style={getBackgroundStyle()}
     >
       {label}
     </button>

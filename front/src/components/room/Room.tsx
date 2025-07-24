@@ -12,19 +12,21 @@ const Room: React.FC = () => {
   };
 
   const roomStyle = isRoomMinimized
-    ? "bottom-0 right-0 w-80 h-60"
+    ? "bottom-4 right-4 w-80 h-60"
     : "w-full h-screen";
 
   return (
     <div
-      className={`absolute rounded-lg flex flex-col items-center justify-center bg-gray-900 ${roomStyle}`}
+      className={`absolute rounded-lg flex flex-col overflow-hidden shadow-lg ${roomStyle}`}
+      style={{ backgroundColor: "var(--monkeycode-bg-tertiary)" }}
     >
       <VideoContainer />
       <RoomButtons />
 
       <button
-        className="absolute bottom-4 right-4 text-white p-2 hover:bg-gray-700 rounded"
+        className="absolute top-2 right-2 w-6 h-6 rounded flex items-center justify-center text-xs hover:bg-opacity-20 hover:bg-white transition-colors"
         onClick={handleRoomResize}
+        style={{ color: "var(--monkeycode-text-muted)" }}
       >
         {isRoomMinimized ? "⛶" : "⊡"}
       </button>

@@ -13,4 +13,5 @@ export interface ActiveRoom {
   roomCreator: RoomParticipant;
   participants: RoomParticipant[];
   roomId: string;
+  creatorUsername: string;
 }

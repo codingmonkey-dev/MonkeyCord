@@ -21,14 +21,17 @@ const Messages: React.FC = () => {
   if (!chosenChatDetails) return null;
 
   return (
-    <div className="flex-1 overflow-y-auto flex flex-col items-center p-4">
-      <div className="w-full max-w-4xl">
-        <div className="flex flex-col mb-4">
+    <div className="flex-1 overflow-y-auto monkeycode-scrollbar">
+      <div className="px-4 py-6">
+        <div className="flex flex-col items-start mb-6">
           <Avatar username={chosenChatDetails.name} large />
-          <h4 className="text-white text-2xl font-bold mt-2">
+          <h4
+            className="text-2xl font-bold mt-4 mb-2"
+            style={{ color: "var(--monkeycode-text-primary)" }}
+          >
             {chosenChatDetails.name}
           </h4>
-          <p className="text-gray-400">
+          <p style={{ color: "var(--monkeycode-text-secondary)" }}>
             {chosenChatDetails.name}님과의 대화 시작입니다.
           </p>
         </div>
@@ -49,9 +52,18 @@ const Messages: React.FC = () => {
           return (
             <div key={message._id} className="w-full">
               {(!sameDay || index === 0) && (
-                <div className="relative my-4">
-                  <div className="w-full h-px bg-gray-600"></div>
-                  <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 px-2 text-gray-400 text-sm">
+                <div className="relative my-6">
+                  <div
+                    className="w-full h-px"
+                    style={{ backgroundColor: "var(--monkeycode-border)" }}
+                  ></div>
+                  <span
+                    className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 px-3 text-xs font-semibold"
+                    style={{
+                      backgroundColor: "var(--monkeycode-bg-primary)",
+                      color: "var(--monkeycode-text-muted)",
+                    }}
+                  >
                     {convertDateToHumanReadable(
                       new Date(message.date),
                       "dd/mm/yy"

@@ -8,8 +8,11 @@ interface AuthBoxProps {
 
 const AuthBox: React.FC<AuthBoxProps> = ({ children }) => {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-blue-600">
-      <div className="w-full max-w-md bg-gray-800 shadow-lg rounded-lg p-6 flex flex-col">
+    <div
+      className="w-full h-screen flex items-center justify-center"
+      style={{ backgroundColor: "var(--monkeycode-accent)" }}
+    >
+      <div className="monkeycode-card w-full max-w-md p-8 flex flex-col">
         {children}
       </div>
     </div>

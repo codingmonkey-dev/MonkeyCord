@@ -21,7 +21,10 @@ const Video: React.FC<VideoProps> = ({ stream, isLocalStream = false }) => {
   }, [stream]);
 
   return (
-    <div className="h-1/2 w-1/2 bg-black rounded-lg overflow-hidden">
+    <div
+      className="w-full h-full rounded-lg overflow-hidden"
+      style={{ backgroundColor: "var(--monkeycode-bg-tertiary)" }}
+    >
       <video
         ref={videoRef}
         autoPlay

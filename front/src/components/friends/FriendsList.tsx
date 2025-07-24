@@ -20,22 +20,35 @@ const FriendsList: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 w-full overflow-y-auto">
+    <div className="flex flex-col space-y-1">
       {friends.map((friend) => (
         <button
           key={friend.id}
-          className="w-full h-12 mt-2 flex items-center justify-start px-2 hover:bg-gray-700 rounded transition-colors relative"
+          className="monkeycode-sidebar-item flex items-center px-2 py-2 rounded group"
           onClick={() =>
             handleChooseActiveConversation(friend.id, friend.username)
           }
         >
-          <Avatar username={friend.username} />
-          <span className="ml-2 text-gray-300 font-semibold">
+          <div className="relative">
+            <Avatar username={friend.username} />
+            {friend.isOnline && (
+              <div className="monkeycode-online-indicator"></div>
+            )}
+          </div>
+          <span
+            className="ml-3 font-medium truncate"
+            style={{ color: "var(--monkeycode-text-secondary)" }}
+          >
             {friend.username}
           </span>
-          {friend.isOnline && (
-            <div className="absolute right-2 w-3 h-3 bg-green-500 rounded-full"></div>
-          )}
+          <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+            <div
+              className="w-4 h-4 rounded-full flex items-center justify-center text-xs"
+              style={{ backgroundColor: "var(--monkeycode-bg-tertiary)" }}
+            >
+              💬
+            </div>
+          </div>
         </button>
       ))}
     </div>

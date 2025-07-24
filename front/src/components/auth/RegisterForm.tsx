@@ -46,8 +46,15 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
-    <>
-      <h2 className="text-2xl font-bold text-white mb-6">회원가입</h2>
+    <div className="flex flex-col">
+      <div className="text-center mb-6">
+        <h2
+          className="text-2xl font-semibold"
+          style={{ color: "var(--monkeycode-text-primary)" }}
+        >
+          몽키코드 회원가입
+        </h2>
+      </div>
 
       <InputWithLabel
         label="이메일"
@@ -73,7 +80,17 @@ const RegisterForm: React.FC = () => {
         placeholder="비밀번호를 입력하세요"
       />
 
-      {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
+      {error && (
+        <div
+          className="text-sm mb-4 px-2 py-1 rounded"
+          style={{
+            color: "var(--monkeycode-danger)",
+            backgroundColor: "rgba(237, 66, 69, 0.1)",
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       <CustomButton
         label={isLoading ? "회원가입 중..." : "회원가입"}
@@ -82,13 +99,20 @@ const RegisterForm: React.FC = () => {
         additionalStyles="mb-4"
       />
 
-      <div className="text-gray-400 text-sm">
+      <div
+        className="text-sm text-center"
+        style={{ color: "var(--monkeycode-text-muted)" }}
+      >
         이미 계정이 있으신가요?{" "}
-        <Link href="/login" className="text-blue-400 hover:underline">
+        <Link
+          href="/login"
+          className="hover:underline"
+          style={{ color: "var(--monkeycode-accent)" }}
+        >
           로그인
         </Link>
       </div>
-    </>
+    </div>
   );
 };
 

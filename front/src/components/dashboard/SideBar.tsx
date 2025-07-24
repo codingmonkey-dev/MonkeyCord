@@ -28,31 +28,74 @@ const SideBar: React.FC = () => {
   };
 
   return (
-    <div className="w-18 h-full flex flex-col items-center bg-gray-900 py-3">
-      <button
-        className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold mb-3 hover:bg-blue-700 transition-colors"
-        onClick={() => window.location.reload()}
-      >
-        D
-      </button>
+    <div
+      className="w-[72px] h-full flex flex-col items-center py-3 border-r"
+      style={{
+        backgroundColor: "var(--monkeycode-bg-tertiary)",
+        borderColor: "var(--monkeycode-border)",
+      }}
+    >
+      <div className="relative mb-2">
+        <button
+          className="w-12 h-12 flex items-center justify-center text-white font-bold rounded-2xl transition-all duration-200 hover:rounded-lg group"
+          onClick={() => window.location.reload()}
+          style={{ backgroundColor: "var(--monkeycode-accent)" }}
+        >
+          <span className="text-lg">🐵</span>
+        </button>
+        <div
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-0 group-hover:h-5 rounded-r-full transition-all duration-200"
+          style={{
+            backgroundColor: "var(--monkeycode-text-primary)",
+            left: "-8px",
+          }}
+        ></div>
+      </div>
 
-      <button
-        className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-3 hover:bg-blue-700 transition-colors"
-        onClick={handleCreateRoom}
-      >
-        +
-      </button>
+      <div
+        className="w-8 h-px mb-2"
+        style={{ backgroundColor: "var(--monkeycode-border)" }}
+      ></div>
+
+      <div className="relative mb-2">
+        <button
+          className="w-12 h-12 flex items-center justify-center text-2xl font-light rounded-2xl transition-all duration-200 hover:rounded-lg group"
+          onClick={handleCreateRoom}
+          style={{
+            backgroundColor: "var(--monkeycode-bg-primary)",
+            color: "var(--monkeycode-success)",
+          }}
+        >
+          +
+        </button>
+        <div
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-0 group-hover:h-5 rounded-r-full transition-all duration-200"
+          style={{
+            backgroundColor: "var(--monkeycode-text-primary)",
+            left: "-8px",
+          }}
+        ></div>
+      </div>
 
       {activeRooms.map((room) => (
-        <button
-          key={room.roomId}
-          className="w-12 h-12 bg-gray-700 rounded-2xl flex items-center justify-center text-white text-sm mb-3 hover:bg-gray-600 transition-colors disabled:opacity-50"
-          onClick={() => handleJoinRoom(room.roomId)}
-          disabled={isUserInRoom}
-          title={`Creator: ${room.creatorUsername}, Participants: ${room.participants.length}`}
-        >
-          {room.creatorUsername?.substring(0, 2).toUpperCase()}
-        </button>
+        <div key={room.roomId} className="relative mb-2">
+          <button
+            className="w-12 h-12 flex items-center justify-center text-white text-xs font-semibold rounded-2xl transition-all duration-200 hover:rounded-lg group disabled:opacity-50"
+            onClick={() => handleJoinRoom(room.roomId)}
+            disabled={isUserInRoom}
+            title={`Creator: ${room.creatorUsername}, Participants: ${room.participants.length}`}
+            style={{ backgroundColor: "var(--monkeycode-bg-primary)" }}
+          >
+            {room.creatorUsername?.substring(0, 2).toUpperCase()}
+          </button>
+          <div
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-0 group-hover:h-5 rounded-r-full transition-all duration-200"
+            style={{
+              backgroundColor: "var(--monkeycode-text-primary)",
+              left: "-8px",
+            }}
+          ></div>
+        </div>
       ))}
     </div>
   );

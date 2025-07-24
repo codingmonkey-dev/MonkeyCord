@@ -57,24 +57,40 @@ const RoomButtons: React.FC = () => {
   };
 
   return (
-    <div className="h-1/5 w-full bg-blue-600 rounded-t-lg flex items-center justify-center gap-4">
+    <div
+      className="h-14 w-full flex items-center justify-center gap-3 px-4"
+      style={{ backgroundColor: "var(--monkeycode-bg-secondary)" }}
+    >
       <button
-        className="p-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white transition-colors"
+        className="w-10 h-10 rounded-full flex items-center justify-center text-sm transition-colors hover:brightness-110"
         onClick={handleToggleMic}
+        style={{
+          backgroundColor: micEnabled
+            ? "var(--monkeycode-bg-primary)"
+            : "var(--monkeycode-danger)",
+          color: "var(--monkeycode-text-primary)",
+        }}
       >
         {micEnabled ? "🎤" : "🔇"}
       </button>
 
       <button
-        className="p-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white transition-colors"
+        className="w-10 h-10 rounded-full flex items-center justify-center text-sm transition-colors hover:brightness-110"
         onClick={handleToggleCamera}
+        style={{
+          backgroundColor: cameraEnabled
+            ? "var(--monkeycode-bg-primary)"
+            : "var(--monkeycode-danger)",
+          color: "var(--monkeycode-text-primary)",
+        }}
       >
         {cameraEnabled ? "📹" : "📷"}
       </button>
 
       <button
-        className="p-3 bg-red-600 hover:bg-red-700 rounded-full text-white transition-colors"
+        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors hover:brightness-110"
         onClick={handleLeaveRoom}
+        style={{ backgroundColor: "var(--monkeycode-danger)", color: "white" }}
       >
         ✕
       </button>

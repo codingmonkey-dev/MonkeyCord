@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Discord Clone",
-  description: "Discord clone built with Next.js",
+  title: "몽키코드",
+  description: "몽키코드 - 커뮤니케이션 플랫폼",
 };
 
 export default function RootLayout({

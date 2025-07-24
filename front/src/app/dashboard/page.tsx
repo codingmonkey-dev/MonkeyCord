@@ -32,11 +32,32 @@ export default function DashboardPage() {
   }, [setUser]);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        className="w-full h-screen flex items-center justify-center"
+        style={{ backgroundColor: "var(--monkeycode-bg-tertiary)" }}
+      >
+        <div className="flex flex-col items-center">
+          <div
+            className="w-12 h-12 rounded-full animate-spin border-4 border-solid mb-4"
+            style={{
+              borderColor: "var(--monkeycode-accent)",
+              borderTopColor: "transparent",
+            }}
+          ></div>
+          <span style={{ color: "var(--monkeycode-text-secondary)" }}>
+            몽키코드 로딩 중...
+          </span>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full h-screen flex">
+    <div
+      className="w-full h-screen flex"
+      style={{ backgroundColor: "var(--monkeycode-bg-tertiary)" }}
+    >
       <SideBar />
       <FriendsSideBar />
       <Messenger />

@@ -16,8 +16,11 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
   placeholder = "",
 }) => {
   return (
-    <div className="flex flex-col mb-4">
-      <label className="text-gray-300 text-sm font-semibold mb-2 uppercase">
+    <div className="flex flex-col mb-5">
+      <label
+        className="text-xs font-semibold mb-2 uppercase tracking-wide"
+        style={{ color: "var(--monkeycode-text-secondary)" }}
+      >
         {label}
       </label>
       <input
@@ -25,7 +28,7 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
-        className="h-10 px-3 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+        className="monkeycode-input"
       />
     </div>
   );

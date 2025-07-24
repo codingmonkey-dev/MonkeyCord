@@ -19,23 +19,42 @@ const Message: React.FC<MessageProps> = ({
 }) => {
   if (sameAuthor && sameDay) {
     return (
-      <div className="w-full text-gray-300 mb-1">
-        <span className="ml-14">{content}</span>
+      <div className="monkeycode-message hover:bg-opacity-5 hover:bg-black pl-14 py-1">
+        <span style={{ color: "var(--monkeycode-text-secondary)" }}>
+          {content}
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="w-full flex mt-2 mb-1">
-      <div className="w-14 flex-shrink-0">
-        <Avatar username={username} />
-      </div>
-      <div className="flex flex-col ml-2">
-        <div className="flex items-center">
-          <span className="text-white font-semibold text-base">{username}</span>
-          <span className="text-gray-500 text-xs ml-2">{date}</span>
+    <div className="monkeycode-message hover:bg-opacity-5 hover:bg-black">
+      <div className="flex items-start">
+        <div className="w-10 flex-shrink-0 mr-4">
+          <Avatar username={username} />
         </div>
-        <div className="text-gray-300">{content}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-baseline mb-1">
+            <span
+              className="font-semibold mr-2"
+              style={{ color: "var(--monkeycode-text-primary)" }}
+            >
+              {username}
+            </span>
+            <span
+              className="text-xs"
+              style={{ color: "var(--monkeycode-text-muted)" }}
+            >
+              {date}
+            </span>
+          </div>
+          <div
+            className="text-sm leading-relaxed break-words"
+            style={{ color: "var(--monkeycode-text-secondary)" }}
+          >
+            {content}
+          </div>
+        </div>
       </div>
     </div>
   );

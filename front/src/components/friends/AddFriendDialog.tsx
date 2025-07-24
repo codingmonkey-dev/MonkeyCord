@@ -48,16 +48,27 @@ const AddFriendDialog: React.FC = () => {
   return (
     <>
       <CustomButton
-        label="친구추가"
+        label="친구 추가"
         onClick={() => setIsDialogOpen(true)}
-        additionalStyles="w-4/5 h-8 bg-green-600 hover:bg-green-700"
+        additionalStyles="bg-success w-full"
       />
 
       {isDialogOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg w-96">
-            <h3 className="text-white text-lg font-bold mb-4">친구 초대</h3>
-            <p className="text-gray-300 mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div
+            className="monkeycode-card w-96 max-w-md p-6 mx-4"
+            style={{ backgroundColor: "var(--monkeycode-bg-modal)" }}
+          >
+            <h3
+              className="text-xl font-semibold mb-2"
+              style={{ color: "var(--monkeycode-text-primary)" }}
+            >
+              친구 초대
+            </h3>
+            <p
+              className="mb-6"
+              style={{ color: "var(--monkeycode-text-secondary)" }}
+            >
               초대할 친구의 이메일을 입력하세요
             </p>
 
@@ -66,20 +77,22 @@ const AddFriendDialog: React.FC = () => {
               type="email"
               value={mail}
               setValue={setMail}
-              placeholder="이메일을 입력하세요"
+              placeholder="친구의 이메일을 입력하세요"
             />
 
             {message && (
               <div
-                className={`text-sm mb-4 ${
-                  message.includes("실패") ? "text-red-500" : "text-green-500"
+                className={`text-sm mb-4 px-3 py-2 rounded ${
+                  message.includes("실패")
+                    ? "text-red-400 bg-red-900 bg-opacity-20"
+                    : "text-green-400 bg-green-900 bg-opacity-20"
                 }`}
               >
                 {message}
               </div>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <CustomButton
                 label={isLoading ? "전송 중..." : "초대 전송"}
                 onClick={handleSendInvitation}
@@ -89,7 +102,7 @@ const AddFriendDialog: React.FC = () => {
               <CustomButton
                 label="취소"
                 onClick={handleCloseDialog}
-                additionalStyles="flex-1 bg-gray-600 hover:bg-gray-700"
+                additionalStyles="flex-1 bg-gray"
               />
             </div>
           </div>
