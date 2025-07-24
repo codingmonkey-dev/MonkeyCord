@@ -22,6 +22,19 @@ apiClient.interceptors.request.use(
   }
 );
 
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        localStorage.clear();
+        window.location.pathname = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const login = async (data: LoginCredentials) => {
   try {
     return await apiClient.post("/auth/login", data);
