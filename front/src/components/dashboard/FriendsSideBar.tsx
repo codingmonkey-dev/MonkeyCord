@@ -1,16 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
+import { useAtom } from "jotai";
+import { localStreamAtom } from "@/store/atoms/room";
 import AddFriendDialog from "@/components/friends/AddFriendDialog";
 import FriendsList from "@/components/friends/FriendsList";
 import PendingInvitations from "@/components/friends/PendingInvitations";
 import { getSocket } from "@/lib/socket";
 import { useSocketHandlers } from "@/lib/socketHandlers";
+import { setCurrentLocalStream } from "@/lib/webrtc";
 
 const FriendsSideBar: React.FC = () => {
   const socket = getSocket();
+  const [localStream] = useAtom(localStreamAtom);
 
   useSocketHandlers(socket);
+
+  useEffect(() => {
+    setCurrentLocalStream(localStream);
+  }, [localStream]);
 
   useEffect(() => {
     console.log("FriendsSideBar mounted, socket:", socket?.id);
@@ -63,5 +71,4 @@ const FriendsSideBar: React.FC = () => {
     </div>
   );
 };
-
 export default FriendsSideBar;

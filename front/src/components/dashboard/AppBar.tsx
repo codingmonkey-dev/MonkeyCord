@@ -10,7 +10,7 @@ import {
 } from "@/store/atoms/room";
 import { logout } from "@/lib/utils";
 import { createNewRoom } from "@/lib/socket";
-import { getLocalStreamPreview } from "@/lib/webrtc";
+import { getLocalStreamPreview, setCurrentLocalStream } from "@/lib/webrtc";
 
 const AppBar: React.FC = () => {
   const [chosenChatDetails] = useAtom(chosenChatDetailsAtom);
@@ -23,9 +23,9 @@ const AppBar: React.FC = () => {
     if (isUserInRoom) return;
 
     try {
-      // 기본적으로 비디오 + 오디오로 시작
       const stream = await getLocalStreamPreview(false);
       setLocalStream(stream);
+      setCurrentLocalStream(stream);
       setAudioOnly(false);
       createNewRoom();
     } catch (error) {
@@ -57,24 +57,6 @@ const AppBar: React.FC = () => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <button
-            className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors disabled:opacity-50"
-            style={{ color: "var(--monkeycode-text-muted)" }}
-            onClick={handleStartCall}
-            disabled={isUserInRoom}
-            title="통화 시작"
-          >
-            📞
-          </button>
-          <button
-            className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors"
-            style={{ color: "var(--monkeycode-text-muted)" }}
-          >
-            📌
-          </button>
-        </div>
-
         <div className="relative">
           <button
             className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors"
@@ -94,13 +76,6 @@ const AppBar: React.FC = () => {
                 className="absolute right-0 top-full mt-2 w-48 rounded-md shadow-lg z-20 py-1"
                 style={{ backgroundColor: "var(--monkeycode-bg-modal)" }}
               >
-                <button
-                  className="w-full px-4 py-2 text-left text-sm hover:bg-opacity-10 hover:bg-white transition-colors"
-                  onClick={handleAudioOnlyToggle}
-                  style={{ color: "var(--monkeycode-text-secondary)" }}
-                >
-                  {audioOnly ? "오디오만 사용 해제" : "오디오만 사용"}
-                </button>
                 <div
                   className="h-px mx-2 my-1"
                   style={{ backgroundColor: "var(--monkeycode-border)" }}

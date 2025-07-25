@@ -49,7 +49,7 @@ export const createNewRoom = () => {
 };
 
 export const joinRoom = (data: { roomId: string }) => {
-  console.log("Joining room:", data);
+  console.log("Emitting room-join event:", data);
   socket?.emit("room-join", data);
 };
 

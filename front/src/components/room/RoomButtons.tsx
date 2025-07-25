@@ -10,7 +10,7 @@ import {
   remoteStreamsAtom,
 } from "@/store/atoms/room";
 import { leaveRoom } from "@/lib/socket";
-import { closeAllConnections } from "@/lib/webrtc";
+import { closeAllConnections, setCurrentLocalStream } from "@/lib/webrtc";
 
 const RoomButtons: React.FC = () => {
   const [localStream, setLocalStream] = useAtom(localStreamAtom);
@@ -22,7 +22,6 @@ const RoomButtons: React.FC = () => {
   const [micEnabled, setMicEnabled] = useState(true);
   const [cameraEnabled, setCameraEnabled] = useState(true);
 
-  // 로컬 스트림이 변경될 때 트랙 상태 확인
   useEffect(() => {
     if (localStream) {
       const audioTrack = localStream.getAudioTracks()[0];
@@ -62,6 +61,7 @@ const RoomButtons: React.FC = () => {
       if (localStream) {
         localStream.getTracks().forEach((track) => track.stop());
         setLocalStream(null);
+        setCurrentLocalStream(null);
       }
       setRemoteStreams([]);
       closeAllConnections();
@@ -115,5 +115,4 @@ const RoomButtons: React.FC = () => {
     </div>
   );
 };
-
 export default RoomButtons;

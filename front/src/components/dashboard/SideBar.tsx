@@ -8,7 +8,7 @@ import {
   audioOnlyAtom,
 } from "@/store/atoms/room";
 import { createNewRoom, joinRoom } from "@/lib/socket";
-import { getLocalStreamPreview } from "@/lib/webrtc";
+import { getLocalStreamPreview, setCurrentLocalStream } from "@/lib/webrtc";
 
 const SideBar: React.FC = () => {
   const [activeRooms] = useAtom(activeRoomsAtom);
@@ -18,9 +18,9 @@ const SideBar: React.FC = () => {
 
   const handleCreateRoom = async () => {
     try {
-      // 기본적으로 비디오 + 오디오로 시작
       const stream = await getLocalStreamPreview(false);
       setLocalStream(stream);
+      setCurrentLocalStream(stream);
       setAudioOnly(false);
       createNewRoom();
     } catch (error) {
@@ -29,10 +29,16 @@ const SideBar: React.FC = () => {
   };
 
   const handleJoinRoom = async (roomId: string) => {
+    if (isUserInRoom) {
+      console.log("User already in room, ignoring join request");
+      return;
+    }
+
+    console.log("Attempting to join room:", roomId);
     try {
-      // 기본적으로 비디오 + 오디오로 시작
       const stream = await getLocalStreamPreview(false);
       setLocalStream(stream);
+      setCurrentLocalStream(stream);
       setAudioOnly(false);
       joinRoom({ roomId });
     } catch (error) {
@@ -97,7 +103,15 @@ const SideBar: React.FC = () => {
         <div key={room.roomId} className="relative mb-2">
           <button
             className="w-12 h-12 flex items-center justify-center text-white text-xs font-semibold rounded-2xl transition-all duration-200 hover:rounded-lg group disabled:opacity-50"
-            onClick={() => handleJoinRoom(room.roomId)}
+            onClick={() => {
+              console.log(
+                "Room button clicked:",
+                room.roomId,
+                "isUserInRoom:",
+                isUserInRoom
+              );
+              handleJoinRoom(room.roomId);
+            }}
             disabled={isUserInRoom}
             title={`${room.creatorUsername}님의 방 (참가자: ${room.participants.length}명)`}
             style={{ backgroundColor: "var(--monkeycode-bg-primary)" }}
@@ -112,7 +126,6 @@ const SideBar: React.FC = () => {
             }}
           ></div>
 
-          {/* 참가자 수 표시 */}
           {room.participants.length > 1 && (
             <div
               className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"

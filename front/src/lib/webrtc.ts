@@ -37,6 +37,14 @@ export const getLocalStreamPreview = async (
 
 let peers: { [key: string]: Peer.Instance } = {};
 let onRemoteStreamCallback: ((stream: MediaStream) => void) | null = null;
+let currentLocalStream: MediaStream | null = null;
+
+export const setCurrentLocalStream = (stream: MediaStream | null) => {
+  currentLocalStream = stream;
+  console.log("Local stream updated:", !!stream);
+};
+
+export const getCurrentLocalStream = () => currentLocalStream;
 
 export const setOnRemoteStreamCallback = (
   callback: (stream: MediaStream) => void
@@ -46,14 +54,24 @@ export const setOnRemoteStreamCallback = (
 
 export const prepareNewPeerConnection = (
   connUserSocketId: string,
-  isInitiator: boolean,
-  localStream: MediaStream
+  isInitiator: boolean
 ) => {
   console.log(
-    isInitiator
-      ? "새로운 피어 커넥션을 시작자로써 준비합니다."
-      : "새로운 피어 커넥션을 참여자로써 준비합니다."
+    `Preparing peer connection with ${connUserSocketId}, initiator: ${isInitiator}`
   );
+
+  if (peers[connUserSocketId]) {
+    console.log("Peer already exists, destroying old connection");
+    peers[connUserSocketId].destroy();
+  }
+
+  const localStream = getCurrentLocalStream();
+  console.log("Local stream available:", !!localStream);
+
+  if (!localStream) {
+    console.error("No local stream available for peer connection");
+    return null;
+  }
 
   peers[connUserSocketId] = new Peer({
     initiator: isInitiator,
@@ -62,6 +80,7 @@ export const prepareNewPeerConnection = (
   });
 
   peers[connUserSocketId].on("signal", (data) => {
+    console.log(`Sending signal to ${connUserSocketId}`);
     const signalData = {
       signal: data,
       connUserSocketId: connUserSocketId,
@@ -70,18 +89,22 @@ export const prepareNewPeerConnection = (
   });
 
   peers[connUserSocketId].on("stream", (remoteStream) => {
-    console.log("원격 스트림 정보가 다른 유저로부터 도착했습니다");
+    console.log(`Remote stream received from ${connUserSocketId}`);
     if (onRemoteStreamCallback) {
       onRemoteStreamCallback(remoteStream);
     }
   });
 
   peers[connUserSocketId].on("connect", () => {
-    console.log("피어 연결이 성공적으로 설정되었습니다");
+    console.log(`Peer connection established with ${connUserSocketId}`);
   });
 
   peers[connUserSocketId].on("error", (error) => {
-    console.error("피어 연결 에러:", error);
+    console.error(`Peer connection error with ${connUserSocketId}:`, error);
+  });
+
+  peers[connUserSocketId].on("close", () => {
+    console.log(`Peer connection closed with ${connUserSocketId}`);
   });
 
   return peers[connUserSocketId];
@@ -92,12 +115,17 @@ export const handleSignalingData = (data: {
   signal: any;
 }) => {
   const { connUserSocketId, signal } = data;
+  console.log(`Handling signal from ${connUserSocketId}`);
+
   if (peers[connUserSocketId]) {
     peers[connUserSocketId].signal(signal);
+  } else {
+    console.warn(`No peer found for ${connUserSocketId}`);
   }
 };
 
 export const closeAllConnections = () => {
+  console.log("Closing all peer connections");
   Object.entries(peers).forEach(([connUserSocketId, peer]) => {
     if (peer) {
       peer.destroy();
@@ -110,6 +138,8 @@ export const handleParticipantLeftRoom = (data: {
   connUserSocketId: string;
 }) => {
   const { connUserSocketId } = data;
+  console.log(`Participant ${connUserSocketId} left room`);
+
   if (peers[connUserSocketId]) {
     peers[connUserSocketId].destroy();
     delete peers[connUserSocketId];

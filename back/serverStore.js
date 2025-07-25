@@ -63,8 +63,7 @@ const addNewActiveRoom = (userId, socketId) => {
     roomId: uuidv4(),
   };
   activeRooms = [...activeRooms, newActiveRoom];
-  console.log("대화방 생성");
-  console.log(activeRooms);
+  console.log("방 생성됨 - 참가자 수:", newActiveRoom.participants.length);
   return newActiveRoom;
 };
 
@@ -76,38 +75,49 @@ const getActiveRoom = (roomId) => {
   const activeRoom = activeRooms.find(
     (activeRoom) => activeRoom.roomId === roomId
   );
-  if (activeRoom) {
-    return {
-      ...activeRoom,
-    };
-  } else {
-    return null;
-  }
+  return activeRoom || null;
 };
 
 const joinActiveRoom = (roomId, newParticipant) => {
-  const room = activeRooms.find((room) => room.roomId === roomId);
-  activeRooms = activeRooms.filter((room) => room.roomId !== roomId);
-  const updatedRoom = {
-    ...room,
-    participants: [...room.participants, newParticipant],
-  };
+  const roomIndex = activeRooms.findIndex((room) => room.roomId === roomId);
 
-  activeRooms.push(updatedRoom);
+  if (roomIndex !== -1) {
+    const room = activeRooms[roomIndex];
+
+    const isAlreadyParticipant = room.participants.some(
+      (p) => p.socketId === newParticipant.socketId
+    );
+
+    if (!isAlreadyParticipant) {
+      room.participants.push(newParticipant);
+      console.log(
+        `참가자 추가됨 - 방 ${roomId}, 총 참가자 수: ${room.participants.length}`
+      );
+    } else {
+      console.log("참가자가 이미 방에 있음:", newParticipant.socketId);
+    }
+  } else {
+    console.log("방을 찾을 수 없음:", roomId);
+  }
 };
 
 const leaveActiveRoom = (roomId, participantSocketId) => {
-  const activeRoom = activeRooms.find((room) => room.roomId === roomId);
-  if (activeRoom) {
-    const copyOfActiveRoom = { ...activeRoom };
+  const roomIndex = activeRooms.findIndex((room) => room.roomId === roomId);
 
-    copyOfActiveRoom.participants = copyOfActiveRoom.participants.filter(
+  if (roomIndex !== -1) {
+    const room = activeRooms[roomIndex];
+
+    room.participants = room.participants.filter(
       (participant) => participant.socketId !== participantSocketId
     );
 
-    activeRooms = activeRooms.filter((room) => room.roomId !== roomId);
-    if (copyOfActiveRoom.participants.length > 0) {
-      activeRooms.push(copyOfActiveRoom);
+    console.log(
+      `참가자 제거됨 - 방 ${roomId}, 남은 참가자 수: ${room.participants.length}`
+    );
+
+    if (room.participants.length === 0) {
+      activeRooms.splice(roomIndex, 1);
+      console.log("빈 방 제거됨:", roomId);
     }
   }
 };

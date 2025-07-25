@@ -10,6 +10,13 @@ const VideoContainer: React.FC = () => {
 
   const totalParticipants = (localStream ? 1 : 0) + remoteStreams.length;
 
+  console.log(
+    "VideoContainer render - Local stream:",
+    !!localStream,
+    "Remote streams:",
+    remoteStreams.length
+  );
+
   return (
     <div className="w-full h-full flex flex-wrap p-2 gap-2 overflow-hidden">
       {localStream && (
@@ -38,7 +45,7 @@ const VideoContainer: React.FC = () => {
 
       {remoteStreams.map((stream, index) => (
         <div
-          key={index}
+          key={`remote-${index}`}
           className={`rounded-lg overflow-hidden relative ${
             totalParticipants === 1
               ? "w-full h-full"
@@ -61,7 +68,6 @@ const VideoContainer: React.FC = () => {
         </div>
       ))}
 
-      {/* 스트림이 없을 때 빈 화면 표시 */}
       {!localStream && remoteStreams.length === 0 && (
         <div
           className="w-full h-full flex items-center justify-center rounded-lg"
@@ -76,6 +82,10 @@ const VideoContainer: React.FC = () => {
           </div>
         </div>
       )}
+
+      <div className="absolute top-2 left-2 text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
+        로컬: {localStream ? "✓" : "✗"} | 원격: {remoteStreams.length}개
+      </div>
     </div>
   );
 };
