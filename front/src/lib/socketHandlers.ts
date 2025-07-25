@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { useSetAtom } from "jotai";
+import { useSetAtom, useAtom } from "jotai";
 import {
   friendsAtom,
   pendingInvitationsAtom,
@@ -18,7 +18,7 @@ import {
   prepareNewPeerConnection,
   handleSignalingData,
   handleParticipantLeftRoom,
-  getLocalStreamPreview,
+  setOnRemoteStreamCallback,
 } from "./webrtc";
 
 export const useSocketHandlers = (socket: Socket | null) => {
@@ -30,8 +30,13 @@ export const useSocketHandlers = (socket: Socket | null) => {
   const setRoomDetails = useSetAtom(roomDetailsAtom);
   const setIsUserInRoom = useSetAtom(isUserInRoomAtom);
   const setIsUserRoomCreator = useSetAtom(isUserRoomCreatorAtom);
-  const setLocalStream = useSetAtom(localStreamAtom);
+  const [localStream] = useAtom(localStreamAtom);
   const setRemoteStreams = useSetAtom(remoteStreamsAtom);
+
+  // 원격 스트림 콜백 설정
+  setOnRemoteStreamCallback((remoteStream: MediaStream) => {
+    setRemoteStreams((prev) => [...prev, remoteStream]);
+  });
 
   if (socket) {
     socket.off("friends-list");
@@ -85,13 +90,23 @@ export const useSocketHandlers = (socket: Socket | null) => {
     socket.on("conn-prepare", (data) => {
       console.log("Connection prepare received:", data);
       const { connUserSocketId } = data;
-      // WebRTC connection preparation logic would go here
+
+      // 기존 참가자가 새 참가자와 연결을 준비 (연결 시작자가 됨)
+      if (localStream) {
+        prepareNewPeerConnection(connUserSocketId, true, localStream);
+        // 새 참가자에게 연결 초기화 신호 전송
+        socket.emit("conn-init", { connUserSocketId: connUserSocketId });
+      }
     });
 
     socket.on("conn-init", (data) => {
       console.log("Connection init received:", data);
       const { connUserSocketId } = data;
-      // WebRTC connection initialization logic would go here
+
+      // 새로 들어온 참가자가 기존 참가자와 연결 (연결 시작자가 아님)
+      if (localStream) {
+        prepareNewPeerConnection(connUserSocketId, false, localStream);
+      }
     });
 
     socket.on("conn-signal", (data) => {
@@ -102,6 +117,9 @@ export const useSocketHandlers = (socket: Socket | null) => {
     socket.on("room-participant-left", (data) => {
       console.log("Room participant left received:", data);
       handleParticipantLeftRoom(data);
+
+      // 원격 스트림에서 해당 참가자 제거
+      setRemoteStreams((prev) => prev.slice(0, -1));
     });
   }
 };

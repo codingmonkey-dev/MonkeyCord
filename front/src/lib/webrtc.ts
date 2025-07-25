@@ -36,6 +36,13 @@ export const getLocalStreamPreview = async (
 };
 
 let peers: { [key: string]: Peer.Instance } = {};
+let onRemoteStreamCallback: ((stream: MediaStream) => void) | null = null;
+
+export const setOnRemoteStreamCallback = (
+  callback: (stream: MediaStream) => void
+) => {
+  onRemoteStreamCallback = callback;
+};
 
 export const prepareNewPeerConnection = (
   connUserSocketId: string,
@@ -64,8 +71,17 @@ export const prepareNewPeerConnection = (
 
   peers[connUserSocketId].on("stream", (remoteStream) => {
     console.log("원격 스트림 정보가 다른 유저로부터 도착했습니다");
-    // 원격 스트림을 처리하는 로직이 필요
-    return remoteStream;
+    if (onRemoteStreamCallback) {
+      onRemoteStreamCallback(remoteStream);
+    }
+  });
+
+  peers[connUserSocketId].on("connect", () => {
+    console.log("피어 연결이 성공적으로 설정되었습니다");
+  });
+
+  peers[connUserSocketId].on("error", (error) => {
+    console.error("피어 연결 에러:", error);
   });
 
   return peers[connUserSocketId];

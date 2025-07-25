@@ -1,15 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { chosenChatDetailsAtom } from "@/store/atoms/chat";
-import { audioOnlyAtom } from "@/store/atoms/room";
+import {
+  audioOnlyAtom,
+  localStreamAtom,
+  isUserInRoomAtom,
+} from "@/store/atoms/room";
 import { logout } from "@/lib/utils";
+import { createNewRoom } from "@/lib/socket";
+import { getLocalStreamPreview } from "@/lib/webrtc";
 
 const AppBar: React.FC = () => {
   const [chosenChatDetails] = useAtom(chosenChatDetailsAtom);
   const [audioOnly, setAudioOnly] = useAtom(audioOnlyAtom);
+  const [isUserInRoom] = useAtom(isUserInRoomAtom);
+  const setLocalStream = useSetAtom(localStreamAtom);
   const [showMenu, setShowMenu] = useState(false);
+
+  const handleStartCall = async () => {
+    if (isUserInRoom) return;
+
+    try {
+      // 기본적으로 비디오 + 오디오로 시작
+      const stream = await getLocalStreamPreview(false);
+      setLocalStream(stream);
+      setAudioOnly(false);
+      createNewRoom();
+    } catch (error) {
+      console.error("Failed to start call:", error);
+    }
+  };
 
   const handleAudioOnlyToggle = () => {
     setAudioOnly(!audioOnly);
@@ -37,16 +59,13 @@ const AppBar: React.FC = () => {
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
           <button
-            className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors"
+            className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors disabled:opacity-50"
             style={{ color: "var(--monkeycode-text-muted)" }}
+            onClick={handleStartCall}
+            disabled={isUserInRoom}
+            title="통화 시작"
           >
             📞
-          </button>
-          <button
-            className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors"
-            style={{ color: "var(--monkeycode-text-muted)" }}
-          >
-            📹
           </button>
           <button
             className="p-2 rounded hover:bg-opacity-10 hover:bg-white transition-colors"

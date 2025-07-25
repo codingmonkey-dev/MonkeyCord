@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAtom, useSetAtom } from "jotai";
 import {
   localStreamAtom,
@@ -21,6 +21,21 @@ const RoomButtons: React.FC = () => {
 
   const [micEnabled, setMicEnabled] = useState(true);
   const [cameraEnabled, setCameraEnabled] = useState(true);
+
+  // 로컬 스트림이 변경될 때 트랙 상태 확인
+  useEffect(() => {
+    if (localStream) {
+      const audioTrack = localStream.getAudioTracks()[0];
+      const videoTrack = localStream.getVideoTracks()[0];
+
+      if (audioTrack) {
+        setMicEnabled(audioTrack.enabled);
+      }
+      if (videoTrack) {
+        setCameraEnabled(videoTrack.enabled);
+      }
+    }
+  }, [localStream]);
 
   const handleToggleMic = () => {
     if (localStream) {
@@ -70,6 +85,7 @@ const RoomButtons: React.FC = () => {
             : "var(--monkeycode-danger)",
           color: "var(--monkeycode-text-primary)",
         }}
+        title={micEnabled ? "마이크 끄기" : "마이크 켜기"}
       >
         {micEnabled ? "🎤" : "🔇"}
       </button>
@@ -83,6 +99,7 @@ const RoomButtons: React.FC = () => {
             : "var(--monkeycode-danger)",
           color: "var(--monkeycode-text-primary)",
         }}
+        title={cameraEnabled ? "카메라 끄기" : "카메라 켜기"}
       >
         {cameraEnabled ? "📹" : "📷"}
       </button>
@@ -91,6 +108,7 @@ const RoomButtons: React.FC = () => {
         className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors hover:brightness-110"
         onClick={handleLeaveRoom}
         style={{ backgroundColor: "var(--monkeycode-danger)", color: "white" }}
+        title="통화 종료"
       >
         ✕
       </button>
